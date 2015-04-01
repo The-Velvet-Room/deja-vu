@@ -1,6 +1,5 @@
 using System;
 using System.Windows.Forms;
-using FileChangeNotifier;
 
 namespace deja_vu
 {
@@ -14,7 +13,7 @@ namespace deja_vu
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmNotifier());
+            Application.Run(new FrmNotifier());
         }
     }
 }

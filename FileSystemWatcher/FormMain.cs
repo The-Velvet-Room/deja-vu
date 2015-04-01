@@ -1,170 +1,121 @@
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
 
-namespace FileChangeNotifier
+namespace deja_vu
 {
-    public partial class frmNotifier : Form
+    public partial class FrmNotifier : Form
     {
-        private StringBuilder m_Sb;
-        private bool m_bDirty;
-        private System.IO.FileSystemWatcher m_Watcher;
-        private bool m_bIsWatching;
+        private readonly StringBuilder _mSb;
+        private bool _mBDirty;
+        private System.IO.FileSystemWatcher _mWatcher;
+        private bool _mBIsWatching;
 
-        public frmNotifier()
+        public FrmNotifier()
         {
             InitializeComponent();
-            m_Sb = new StringBuilder();
-            m_bDirty = false;
-            m_bIsWatching = false;
+            _mSb = new StringBuilder();
+            _mBDirty = false;
+            _mBIsWatching = false;
         }
 
         private void btnWatchFile_Click(object sender, EventArgs e)
         {
-            if (m_bIsWatching)
+            if (_mBIsWatching)
             {
-                m_bIsWatching = false;
-                m_Watcher.EnableRaisingEvents = false;
-                m_Watcher.Dispose();
+                _mBIsWatching = false;
+                _mWatcher.EnableRaisingEvents = false;
+                _mWatcher.Dispose();
                 btnWatchFile.BackColor = Color.LightSkyBlue;
                 btnWatchFile.Text = "Start Watching";
                 
             }
             else
             {
-                m_bIsWatching = true;
+                _mBIsWatching = true;
                 btnWatchFile.BackColor = Color.Red;
                 btnWatchFile.Text = "Stop Watching";
 
-                m_Watcher = new System.IO.FileSystemWatcher();
-                if (rdbDir.Checked)
-                {
-                    m_Watcher.Filter = "*.*";
-                    m_Watcher.Path = txtFile.Text + "\\";
-                }
-                else
-                {
-                    m_Watcher.Filter = txtFile.Text.Substring(txtFile.Text.LastIndexOf('\\') + 1);
-                    m_Watcher.Path = txtFile.Text.Substring(0, txtFile.Text.Length - m_Watcher.Filter.Length);
-                }
+                _mWatcher = new System.IO.FileSystemWatcher
+                    {
+                        Filter = "*.*",
+                        Path = txtFile.Text + "\\",
+                        IncludeSubdirectories = true,
+                        NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
+                                       | NotifyFilters.FileName | NotifyFilters.DirectoryName
+                    };
 
-                if (chkSubFolder.Checked)
-                {
-                    m_Watcher.IncludeSubdirectories = true;
-                }
 
-                m_Watcher.NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
-                                     | NotifyFilters.FileName | NotifyFilters.DirectoryName;
-                m_Watcher.Changed += new FileSystemEventHandler(OnChanged);
-                m_Watcher.Created += new FileSystemEventHandler(OnChanged);
-                m_Watcher.Deleted += new FileSystemEventHandler(OnChanged);
-                m_Watcher.Renamed += new RenamedEventHandler(OnRenamed);
-                m_Watcher.EnableRaisingEvents = true;
+                _mWatcher.Changed += OnChanged;
+                _mWatcher.Created += OnChanged;
+                _mWatcher.Deleted += OnChanged;
+                _mWatcher.Renamed += OnRenamed;
+                _mWatcher.EnableRaisingEvents = true;
             }
         }
 
         private void OnChanged(object sender, FileSystemEventArgs e)
         {
-            if (!m_bDirty)
+            if (!_mBDirty)
             {
-                m_Sb.Remove(0, m_Sb.Length);
-                m_Sb.Append(e.FullPath);
-                m_Sb.Append(" ");
-                m_Sb.Append(e.ChangeType.ToString());
-                m_Sb.Append("    ");
-                m_Sb.Append(DateTime.Now.ToString());
-                m_bDirty = true;
+                _mSb.Remove(0, _mSb.Length);
+                _mSb.Append(e.FullPath);
+                _mSb.Append(" ");
+                _mSb.Append(e.ChangeType);
+                _mSb.Append("    ");
+                _mSb.Append(DateTime.Now);
+                _mBDirty = true;
             }
         }
 
         private void OnRenamed(object sender, RenamedEventArgs e)
         {
-            if (!m_bDirty)
+            if (!_mBDirty)
             {
-                m_Sb.Remove(0, m_Sb.Length);
-                m_Sb.Append(e.OldFullPath);
-                m_Sb.Append(" ");
-                m_Sb.Append(e.ChangeType.ToString());
-                m_Sb.Append(" ");
-                m_Sb.Append("to ");
-                m_Sb.Append(e.Name);
-                m_Sb.Append("    ");
-                m_Sb.Append(DateTime.Now.ToString());
-                m_bDirty = true;
-                if (rdbFile.Checked)
-                {
-                    m_Watcher.Filter = e.Name;
-                    m_Watcher.Path = e.FullPath.Substring(0, e.FullPath.Length - m_Watcher.Filter.Length);
-                }
+                _mSb.Remove(0, _mSb.Length);
+                _mSb.Append(e.OldFullPath);
+                _mSb.Append(" ");
+                _mSb.Append(e.ChangeType);
+                _mSb.Append(" ");
+                _mSb.Append("to ");
+                _mSb.Append(e.Name);
+                _mSb.Append("    ");
+                _mSb.Append(DateTime.Now);
+                _mBDirty = true;
             }            
         }
 
         private void tmrEditNotify_Tick(object sender, EventArgs e)
         {
-            if (m_bDirty)
+            if (_mBDirty)
             {
                 lstNotification.BeginUpdate();
-                lstNotification.Items.Add(m_Sb.ToString());
+                //lstNotification.Items.Add(_mSb.ToString());
+                lstNotification.Items.Insert(0, _mSb.ToString());
                 lstNotification.EndUpdate();
-                m_bDirty = false;
+                _mBDirty = false;
             }
         }
 
         private void btnBrowseFile_Click(object sender, EventArgs e)
         {
-            if (rdbDir.Checked)
-            {
-                DialogResult resDialog = dlgOpenDir.ShowDialog();
-                if (resDialog.ToString() == "OK")
-                {
-                    txtFile.Text = dlgOpenDir.SelectedPath;
-                }
-            }
-            else
-            {
-                DialogResult resDialog = dlgOpenFile.ShowDialog();
-                if (resDialog.ToString() == "OK")
-                {
-                    txtFile.Text = dlgOpenFile.FileName;
-                }
-            }
-        }
-
-        private void btnLog_Click(object sender, EventArgs e)
-        {
-            DialogResult resDialog = dlgSaveFile.ShowDialog();
+            var resDialog = dlgOpenDir.ShowDialog();
             if (resDialog.ToString() == "OK")
             {
-                FileInfo fi = new FileInfo(dlgSaveFile.FileName);
-                StreamWriter sw = fi.CreateText();
-                foreach (string sItem in lstNotification.Items)
-                {
-                    sw.WriteLine(sItem);
-                }
-                sw.Close();
+                txtFile.Text = dlgOpenDir.SelectedPath;
             }
         }
 
-        private void rdbFile_CheckedChanged(object sender, EventArgs e)
+        private void label3_Click(object sender, EventArgs e)
         {
-            if (rdbFile.Checked == true)
-            {
-                chkSubFolder.Enabled = false;
-                chkSubFolder.Checked = false;
-            }
+
         }
 
-        private void rdbDir_CheckedChanged(object sender, EventArgs e)
+        private void FrmNotifier_Load(object sender, EventArgs e)
         {
-            if (rdbDir.Checked == true)
-            {
-                chkSubFolder.Enabled = true;
-            }
+
         }
     }
 }

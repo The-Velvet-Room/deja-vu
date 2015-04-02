@@ -64,7 +64,7 @@ namespace deja_vu
                 _mWatcher = new System.IO.FileSystemWatcher
                     {
                         Filter = "*.*",
-                        Path = txtFile.Text + "\\",
+                        Path = txtFile.Text.EndsWith("\\") ? txtFile.Text : txtFile.Text + "\\",
                         IncludeSubdirectories = false,
                         NotifyFilter = NotifyFilters.LastWrite
                                        | NotifyFilters.FileName | NotifyFilters.DirectoryName

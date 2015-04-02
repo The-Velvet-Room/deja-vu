@@ -20,6 +20,9 @@ namespace deja_vu
         private const string ReplayFolderPrefix = "tvr-replay-";
         private string _nextBufferPath;
         private const string IniFileName = "deja-vu.ini";
+        private bool _useCycle;
+        private int _cycleSize;
+        private int _cycleIndex;
 
         public FrmNotifier()
         {
@@ -126,9 +129,28 @@ namespace deja_vu
 
         private void MapBufferToReplay(string dir)
         {
-            var replayIndex = _replayBuffers.Count;
-            var replayPath = dir.Substring(0, dir.LastIndexOf("\\", StringComparison.Ordinal)) + "\\" +
-                             ReplayFolderPrefix + replayIndex;
+            var replayPath = "";
+
+            //Boundless Replays
+            if (!_useCycle)
+            {
+                var replayIndex = _replayBuffers.Count;
+                 replayPath = dir.Substring(0, dir.LastIndexOf("\\", StringComparison.Ordinal)) + "\\" +
+                                 ReplayFolderPrefix + replayIndex;
+            }
+            //Circle around to maintain a max number of replays.
+            else
+            {
+                if (_cycleIndex > _cycleSize)
+                {
+                    _cycleIndex = 0;
+                }
+
+                replayPath = dir.Substring(0, dir.LastIndexOf("\\", StringComparison.Ordinal)) + "\\" +
+                                ReplayFolderPrefix + _cycleIndex;
+                _cycleIndex++;
+            }
+            
 
             if (!Directory.Exists(replayPath))
             {
@@ -137,7 +159,9 @@ namespace deja_vu
             }
 
             CreateCurrentReplayFolderIfNecessary();
-            _replayBuffers.Add(replayPath);
+
+            if((_useCycle && _replayBuffers.Count < _cycleSize) || !_useCycle)
+                _replayBuffers.Add(replayPath);
 
             //Copy and move the buffer into two replay folders
             //The tail of the list, and the current
@@ -304,6 +328,22 @@ namespace deja_vu
                 _mBDirty = true;
             }
             
+        }
+
+        //Use Cycling Checkbox
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            var buttonBase = (CheckBox) sender;
+            numericUpDown1.Enabled = buttonBase.CheckState == CheckState.Checked;
+            _useCycle = numericUpDown1.Enabled;
+
+        }
+
+        //Replay Cycles
+        private void numericUpDown1_ValueChanged(object sender, EventArgs e)
+        {
+            var upDown = (NumericUpDown) sender;
+            _cycleSize = Decimal.ToInt32(upDown.Value);
         }
     }
 }

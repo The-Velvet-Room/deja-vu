@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
@@ -12,6 +13,12 @@ namespace deja_vu
         private bool _mBDirty;
         private System.IO.FileSystemWatcher _mWatcher;
         private bool _mBIsWatching;
+        
+        //List of replay buffers
+        //Using a List allows n buffers
+        static List<string> replayBuffers;
+        private const string ReplayFolderPrefix = "tvr-replay-";
+        private string _nextBufferPath;
 
         public FrmNotifier()
         {
@@ -19,6 +26,7 @@ namespace deja_vu
             _mSb = new StringBuilder();
             _mBDirty = false;
             _mBIsWatching = false;
+            replayBuffers = new List<string>();
         }
 
         private void btnWatchFile_Click(object sender, EventArgs e)
@@ -49,24 +57,89 @@ namespace deja_vu
 
 
                 _mWatcher.Changed += OnChanged;
-                _mWatcher.Created += OnChanged;
+                _mWatcher.Created += OnCreated;
                 _mWatcher.Deleted += OnChanged;
                 _mWatcher.Renamed += OnRenamed;
                 _mWatcher.EnableRaisingEvents = true;
+
+                CreateCurrentReplayFolderIfNecessary();
             }
+        }
+
+        private void OnCreated(object sender, FileSystemEventArgs e)
+        {
+            if (!_mBDirty)
+            {
+                _mSb.Remove(0, _mSb.Length);
+                //Skip directories with our file prefix
+                if (e.FullPath.Contains(ReplayFolderPrefix))
+                {
+                    return;
+                }                
+
+                _mSb.Append("New raw buffer at "+e.FullPath);
+                _nextBufferPath = e.FullPath;
+                MapBufferToReplay(e.FullPath);
+                _mBDirty = true;               
+            }
+        }
+
+        private void CreateCurrentReplayFolderIfNecessary()
+        {
+            //Create folder for currently chosen replay
+            //Must always be active as this is the main file
+            var replayPath = txtFile.Text + "\\" + ReplayFolderPrefix + "current";
+
+            if (!Directory.Exists(replayPath))
+            {
+                Directory.CreateDirectory(replayPath);
+            }
+        }
+
+        private string GetCurrentReplayFolder()
+        {
+            var replayPath = txtFile.Text + "\\" + ReplayFolderPrefix + "current";
+            return replayPath;
+        }
+
+        private string GetNextBufferFileExtension()
+        {
+            return _nextBufferPath.Substring(_nextBufferPath.LastIndexOf("."));
+        }
+
+        private void MapBufferToReplay(string dir)
+        {
+            var replayIndex = replayBuffers.Count;
+            var replayPath = dir.Substring(0, dir.LastIndexOf("\\", StringComparison.Ordinal)) + "\\" + ReplayFolderPrefix + replayIndex;
+
+            if (!Directory.Exists(replayPath))
+            {
+                Directory.CreateDirectory(replayPath);
+                _mSb.Append("Created new replay slot " + replayIndex);
+            }
+
+            CreateCurrentReplayFolderIfNecessary();            
+            replayBuffers.Add(replayPath);
+
+            //Copy and move the buffer into two replay folders
+            //The tail of the list, and the current
+            File.Copy(_nextBufferPath, replayPath+"\\"+"replay" + GetNextBufferFileExtension(), true);
+            _mSb.Append("Wrote replay to slot " + replayIndex);
+            File.Copy(_nextBufferPath, GetCurrentReplayFolder() + "\\" + "replay" + GetNextBufferFileExtension(), true);
+            _mSb.Append("Overwrote main replay slot");
         }
 
         private void OnChanged(object sender, FileSystemEventArgs e)
         {
             if (!_mBDirty)
             {
-                _mSb.Remove(0, _mSb.Length);
+                /*_mSb.Remove(0, _mSb.Length);
                 _mSb.Append(e.FullPath);
                 _mSb.Append(" ");
                 _mSb.Append(e.ChangeType);
                 _mSb.Append("    ");
                 _mSb.Append(DateTime.Now);
-                _mBDirty = true;
+                _mBDirty = true;*/
             }
         }
 
@@ -116,6 +189,19 @@ namespace deja_vu
         private void FrmNotifier_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void lstNotification_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            //Empty the replay buffers
+            replayBuffers.Clear();
+
+            //TODO Delete files in the buffer folders
         }
     }
 }

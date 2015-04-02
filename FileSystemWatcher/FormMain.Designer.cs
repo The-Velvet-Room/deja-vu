@@ -29,6 +29,7 @@ namespace deja_vu
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmNotifier));
             this.txtFile = new System.Windows.Forms.TextBox();
             this.lblFile = new System.Windows.Forms.Label();
             this.btnWatchFile = new System.Windows.Forms.Button();
@@ -39,6 +40,7 @@ namespace deja_vu
             this.dlgOpenFile = new System.Windows.Forms.OpenFileDialog();
             this.dlgOpenDir = new System.Windows.Forms.FolderBrowserDialog();
             this.dlgSaveFile = new System.Windows.Forms.SaveFileDialog();
+            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // txtFile
@@ -78,6 +80,7 @@ namespace deja_vu
             this.lstNotification.Name = "lstNotification";
             this.lstNotification.Size = new System.Drawing.Size(461, 303);
             this.lstNotification.TabIndex = 5;
+            this.lstNotification.SelectedIndexChanged += new System.EventHandler(this.lstNotification_SelectedIndexChanged);
             // 
             // label3
             // 
@@ -116,11 +119,23 @@ namespace deja_vu
             this.dlgSaveFile.DefaultExt = "log";
             this.dlgSaveFile.Filter = "LogFiles|*.log";
             // 
+            // button1
+            // 
+            this.button1.BackColor = System.Drawing.Color.Red;
+            this.button1.Location = new System.Drawing.Point(397, 51);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(72, 23);
+            this.button1.TabIndex = 9;
+            this.button1.Text = "Clear All";
+            this.button1.UseVisualStyleBackColor = false;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // FrmNotifier
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(481, 422);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.lstNotification);
             this.Controls.Add(this.lblFile);
@@ -128,8 +143,9 @@ namespace deja_vu
             this.Controls.Add(this.btnWatchFile);
             this.Controls.Add(this.btnBrowseFile);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FrmNotifier";
-            this.Text = "The Velvet Room - Deja Vu";
+            this.Text = "Déjà vu - The Velvet Room";
             this.Load += new System.EventHandler(this.FrmNotifier_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -149,6 +165,7 @@ namespace deja_vu
         private System.Windows.Forms.OpenFileDialog dlgOpenFile;
         private System.Windows.Forms.FolderBrowserDialog dlgOpenDir;
         private System.Windows.Forms.SaveFileDialog dlgSaveFile;
+        private System.Windows.Forms.Button button1;
     }
 }
 

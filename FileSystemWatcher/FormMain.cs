@@ -33,8 +33,7 @@ namespace deja_vu
             if (!string.IsNullOrWhiteSpace(formerDir))
             {
                 txtFile.Text = formerDir;
-            }
-            
+            }   
         }
 
         private void CheckForIni()
@@ -252,10 +251,23 @@ namespace deja_vu
         //Clear Button
         private void button1_Click(object sender, EventArgs e)
         {
+            for (var i = 0; i < _replayBuffers.Count; i++)
+            {
+                var replayPath = txtFile.Text + "\\" + ReplayFolderPrefix + i;
+                Directory.Delete(replayPath, true);
+            }
+
             //Empty the replay buffers
             _replayBuffers.Clear();
 
-            //TODO Delete files in the buffer folders
+            //Reset listbox
+            listBox1.Invoke(() => listBox1.Items.Clear());
+
+            //Inform User
+            _mSb.Remove(0, _mSb.Length);
+            _mSb.AppendLine("Cleared all slots. ");
+            _mSb.Append(DateTime.Now);
+            _mBDirty = true;
         }
 
         private void label1_Click(object sender, EventArgs e)

@@ -58,9 +58,9 @@ namespace deja_vu
             this.lblFile.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblFile.Location = new System.Drawing.Point(8, 9);
             this.lblFile.Name = "lblFile";
-            this.lblFile.Size = new System.Drawing.Size(179, 13);
+            this.lblFile.Size = new System.Drawing.Size(277, 13);
             this.lblFile.TabIndex = 1;
-            this.lblFile.Text = "Select Replay Buffer Directory";
+            this.lblFile.Text = "Replay Buffer Directory (OBS should write here)";
             // 
             // btnWatchFile
             // 

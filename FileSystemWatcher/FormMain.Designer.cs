@@ -41,6 +41,8 @@ namespace deja_vu
             this.dlgOpenDir = new System.Windows.Forms.FolderBrowserDialog();
             this.dlgSaveFile = new System.Windows.Forms.SaveFileDialog();
             this.button1 = new System.Windows.Forms.Button();
+            this.listBox1 = new System.Windows.Forms.ListBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // txtFile
@@ -76,9 +78,9 @@ namespace deja_vu
             // lstNotification
             // 
             this.lstNotification.FormattingEnabled = true;
-            this.lstNotification.Location = new System.Drawing.Point(11, 107);
+            this.lstNotification.Location = new System.Drawing.Point(11, 146);
             this.lstNotification.Name = "lstNotification";
-            this.lstNotification.Size = new System.Drawing.Size(461, 303);
+            this.lstNotification.Size = new System.Drawing.Size(461, 264);
             this.lstNotification.TabIndex = 5;
             this.lstNotification.SelectedIndexChanged += new System.EventHandler(this.lstNotification_SelectedIndexChanged);
             // 
@@ -86,7 +88,7 @@ namespace deja_vu
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(8, 87);
+            this.label3.Location = new System.Drawing.Point(12, 130);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(101, 13);
             this.label3.TabIndex = 6;
@@ -130,11 +132,32 @@ namespace deja_vu
             this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // listBox1
+            // 
+            this.listBox1.FormattingEnabled = true;
+            this.listBox1.Location = new System.Drawing.Point(112, 97);
+            this.listBox1.Name = "listBox1";
+            this.listBox1.Size = new System.Drawing.Size(357, 30);
+            this.listBox1.TabIndex = 10;
+            this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(8, 97);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(77, 13);
+            this.label1.TabIndex = 11;
+            this.label1.Text = "Current Replay";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
+            // 
             // FrmNotifier
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(481, 422);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.listBox1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.lstNotification);
@@ -166,6 +189,8 @@ namespace deja_vu
         private System.Windows.Forms.FolderBrowserDialog dlgOpenDir;
         private System.Windows.Forms.SaveFileDialog dlgSaveFile;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ListBox listBox1;
+        private System.Windows.Forms.Label label1;
     }
 }
 

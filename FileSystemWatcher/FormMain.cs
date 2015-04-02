@@ -22,7 +22,7 @@ namespace deja_vu
         private const string IniFileName = "deja-vu.ini";
         private bool _useCycle;
         private int _cycleSize;
-        private int _cycleIndex;
+        private int _cycleIndex = -1;
 
         public FrmNotifier()
         {
@@ -141,14 +141,14 @@ namespace deja_vu
             //Circle around to maintain a max number of replays.
             else
             {
-                if (_cycleIndex > _cycleSize)
+                _cycleIndex++;
+                if (_cycleIndex >= _cycleSize)
                 {
                     _cycleIndex = 0;
                 }
 
                 replayPath = dir.Substring(0, dir.LastIndexOf("\\", StringComparison.Ordinal)) + "\\" +
                                 ReplayFolderPrefix + _cycleIndex;
-                _cycleIndex++;
             }
             
 
@@ -188,7 +188,7 @@ namespace deja_vu
         {
             if (listBox1.InvokeRequired)
             {
-                // This is a worker thread so delegate the task.
+                // This is a worker thread to delegate the task.
                 listBox1.Invoke(new AddListBoxItemDelegate(AddListBoxItem), item);
             }
             else
@@ -201,9 +201,13 @@ namespace deja_vu
         private void UpdateListBoxWithReplays()
         {
             //Add most recent to listbox
-            AddListBoxItem(_replayBuffers[_replayBuffers.Count - 1]);
-            //Set the most recent as the selected item
-            listBox1.Invoke(() => listBox1.SetSelected(0, true));
+            if ((_useCycle && _replayBuffers.Count <= _cycleSize) || !_useCycle)
+            {
+                AddListBoxItem(_replayBuffers[_cycleIndex]);
+                //Set the most recent as the selected item
+                listBox1.Invoke(() => listBox1.SetSelected(0, true));
+            }
+                
         }
 
         private void OnChanged(object sender, FileSystemEventArgs e)

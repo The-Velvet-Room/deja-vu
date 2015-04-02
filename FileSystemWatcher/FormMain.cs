@@ -16,10 +16,10 @@ namespace deja_vu
         
         //List of replay buffers
         //Using a List allows n buffers
-        static List<string> replayBuffers;
+        static List<string> _replayBuffers;
         private const string ReplayFolderPrefix = "tvr-replay-";
         private string _nextBufferPath;
-        private bool _bufferCreated = false;
+        private const string IniFileName = "deja-vu.ini";
 
         public FrmNotifier()
         {
@@ -27,7 +27,22 @@ namespace deja_vu
             _mSb = new StringBuilder();
             _mBDirty = false;
             _mBIsWatching = false;
-            replayBuffers = new List<string>();
+            _replayBuffers = new List<string>();
+            CheckForIni();
+            var formerDir = File.ReadAllText(IniFileName);
+            if (!string.IsNullOrWhiteSpace(formerDir))
+            {
+                txtFile.Text = formerDir;
+            }
+            
+        }
+
+        private void CheckForIni()
+        {
+            if (!File.Exists(IniFileName))
+            {
+                File.Create(IniFileName);
+            }
         }
 
         private void btnWatchFile_Click(object sender, EventArgs e)
@@ -55,6 +70,9 @@ namespace deja_vu
                         NotifyFilter = NotifyFilters.LastWrite
                                        | NotifyFilters.FileName | NotifyFilters.DirectoryName
                     };
+
+                //Write path so we can pick it again on startup.
+                File.WriteAllText(IniFileName, _mWatcher.Path);
 
 
                 //_mWatcher.Changed += OnChanged;
@@ -109,7 +127,7 @@ namespace deja_vu
 
         private void MapBufferToReplay(string dir)
         {
-            var replayIndex = replayBuffers.Count;
+            var replayIndex = _replayBuffers.Count;
             var replayPath = dir.Substring(0, dir.LastIndexOf("\\", StringComparison.Ordinal)) + "\\" +
                              ReplayFolderPrefix + replayIndex;
 
@@ -120,7 +138,7 @@ namespace deja_vu
             }
 
             CreateCurrentReplayFolderIfNecessary();
-            replayBuffers.Add(replayPath);
+            _replayBuffers.Add(replayPath);
 
             //Copy and move the buffer into two replay folders
             //The tail of the list, and the current
@@ -160,7 +178,7 @@ namespace deja_vu
         private void UpdateListBoxWithReplays()
         {
             //Add most recent to listbox
-            AddListBoxItem(replayBuffers[replayBuffers.Count - 1]);
+            AddListBoxItem(_replayBuffers[_replayBuffers.Count - 1]);
             //Set the most recent as the selected item
             listBox1.Invoke(() => listBox1.SetSelected(0, true));
         }
@@ -235,7 +253,7 @@ namespace deja_vu
         private void button1_Click(object sender, EventArgs e)
         {
             //Empty the replay buffers
-            replayBuffers.Clear();
+            _replayBuffers.Clear();
 
             //TODO Delete files in the buffer folders
         }
@@ -261,7 +279,7 @@ namespace deja_vu
             {
                 File.Copy(replayFile, GetCurrentReplayFolder() + "\\" + "replay" + GetNextBufferFileExtension(), true);
                 _mSb.Remove(0, _mSb.Length);
-                _mSb.AppendLine("Switched to slot " + newSlot + ". " + replayBuffers.Count + " slots available. ");
+                _mSb.AppendLine("Switched to slot " + newSlot + ". " + _replayBuffers.Count + " slots available. ");
                 _mSb.Append(DateTime.Now);
                 _mBDirty = true;
             }

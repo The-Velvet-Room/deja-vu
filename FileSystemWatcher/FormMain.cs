@@ -52,7 +52,7 @@ namespace deja_vu
                         Filter = "*.*",
                         Path = txtFile.Text + "\\",
                         IncludeSubdirectories = false,
-                        NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
+                        NotifyFilter = NotifyFilters.LastWrite
                                        | NotifyFilters.FileName | NotifyFilters.DirectoryName
                     };
 
@@ -76,14 +76,8 @@ namespace deja_vu
                 if (e.FullPath.Contains(ReplayFolderPrefix))
                 {
                     return;
-                }                
+                }
 
-                //_mSb.AppendLine("New buffer. ");
-                _mSb.Append(e.FullPath);
-                _mSb.Append(" ");
-                _mSb.Append(e.ChangeType);
-                _mSb.Append("    ");
-                _mSb.Append(DateTime.Now);
                 _nextBufferPath = e.FullPath;
                 MapBufferToReplay(e.FullPath);
                 _mBDirty = true;
@@ -110,7 +104,7 @@ namespace deja_vu
 
         private string GetNextBufferFileExtension()
         {
-            return _nextBufferPath.Substring(_nextBufferPath.LastIndexOf("."));
+            return _nextBufferPath == null ? "" : _nextBufferPath.Substring(_nextBufferPath.LastIndexOf("."));
         }
 
         private void MapBufferToReplay(string dir)
@@ -130,10 +124,18 @@ namespace deja_vu
 
             //Copy and move the buffer into two replay folders
             //The tail of the list, and the current
-            File.Copy(_nextBufferPath, replayPath + "\\" + "replay" + GetNextBufferFileExtension(), true);
-            //_mSb.AppendLine("Wrote to slot " + replayIndex+". ");
-            File.Copy(_nextBufferPath, GetCurrentReplayFolder() + "\\" + "replay" + GetNextBufferFileExtension(), true);
-            //_mSb.AppendLine("Overwrote current. ");
+            try
+            {
+                File.Copy(_nextBufferPath, replayPath + "\\" + "replay" + GetNextBufferFileExtension(), true);
+                //_mSb.AppendLine("Wrote to slot " + replayIndex+". ");
+                File.Copy(_nextBufferPath, GetCurrentReplayFolder() + "\\" + "replay" + GetNextBufferFileExtension(), true);
+                //_mSb.AppendLine("Overwrote current. ");
+            }
+            catch (Exception)
+            {
+               Console.WriteLine("We tried to access a deleted file?");
+            }
+            
 
             UpdateListBoxWithReplays();
             //_mSb.Append(DateTime.Now);
@@ -255,10 +257,23 @@ namespace deja_vu
             var replayFile = replaySlot + "\\" + "replay" + GetNextBufferFileExtension();
             
             //Copy replay to current slot
-            File.Copy(replayFile, GetCurrentReplayFolder() + "\\" + "replay" + GetNextBufferFileExtension(), true);
-            _mSb.AppendLine("Switched to slot "+newSlot+". ");
-            _mSb.Append(DateTime.Now);
-            _mBDirty = true;
+            try
+            {
+                File.Copy(replayFile, GetCurrentReplayFolder() + "\\" + "replay" + GetNextBufferFileExtension(), true);
+                _mSb.Remove(0, _mSb.Length);
+                _mSb.AppendLine("Switched to slot " + newSlot + ". " + replayBuffers.Count + " slots available. ");
+                _mSb.Append(DateTime.Now);
+                _mBDirty = true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                _mSb.Remove(0, _mSb.Length);
+                _mSb.AppendLine("Error. Could not find valid replay file in slot "+newSlot+". ");
+                _mSb.Append(DateTime.Now);
+                _mBDirty = true;
+            }
+            
         }
     }
 }

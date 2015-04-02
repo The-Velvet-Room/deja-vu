@@ -19,6 +19,7 @@ namespace deja_vu
         static List<string> replayBuffers;
         private const string ReplayFolderPrefix = "tvr-replay-";
         private string _nextBufferPath;
+        private bool _bufferCreated = false;
 
         public FrmNotifier()
         {
@@ -50,16 +51,16 @@ namespace deja_vu
                     {
                         Filter = "*.*",
                         Path = txtFile.Text + "\\",
-                        IncludeSubdirectories = true,
+                        IncludeSubdirectories = false,
                         NotifyFilter = NotifyFilters.LastAccess | NotifyFilters.LastWrite
                                        | NotifyFilters.FileName | NotifyFilters.DirectoryName
                     };
 
 
-                _mWatcher.Changed += OnChanged;
+                //_mWatcher.Changed += OnChanged;
                 _mWatcher.Created += OnCreated;
-                _mWatcher.Deleted += OnChanged;
-                _mWatcher.Renamed += OnRenamed;
+                //_mWatcher.Deleted += OnChanged;
+                //_mWatcher.Renamed += OnRenamed;
                 _mWatcher.EnableRaisingEvents = true;
 
                 CreateCurrentReplayFolderIfNecessary();
@@ -77,10 +78,15 @@ namespace deja_vu
                     return;
                 }                
 
-                _mSb.AppendLine("New raw buffer found. ");
+                //_mSb.AppendLine("New buffer. ");
+                _mSb.Append(e.FullPath);
+                _mSb.Append(" ");
+                _mSb.Append(e.ChangeType);
+                _mSb.Append("    ");
+                _mSb.Append(DateTime.Now);
                 _nextBufferPath = e.FullPath;
                 MapBufferToReplay(e.FullPath);
-                _mBDirty = true;               
+                _mBDirty = true;
             }
         }
 
@@ -116,7 +122,7 @@ namespace deja_vu
             if (!Directory.Exists(replayPath))
             {
                 Directory.CreateDirectory(replayPath);
-                _mSb.AppendLine("Created new replay slot " + replayIndex+". ");
+                //_mSb.AppendLine("Created new slot " + replayIndex+". ");
             }
 
             CreateCurrentReplayFolderIfNecessary();
@@ -125,12 +131,12 @@ namespace deja_vu
             //Copy and move the buffer into two replay folders
             //The tail of the list, and the current
             File.Copy(_nextBufferPath, replayPath + "\\" + "replay" + GetNextBufferFileExtension(), true);
-            _mSb.AppendLine("Wrote replay to slot " + replayIndex+". ");
+            //_mSb.AppendLine("Wrote to slot " + replayIndex+". ");
             File.Copy(_nextBufferPath, GetCurrentReplayFolder() + "\\" + "replay" + GetNextBufferFileExtension(), true);
-            _mSb.AppendLine("Overwrote main replay slot. ");
+            //_mSb.AppendLine("Overwrote current. ");
 
             UpdateListBoxWithReplays();
-            _mSb.Append(DateTime.Now);
+            //_mSb.Append(DateTime.Now);
         }
 
         private delegate void AddListBoxItemDelegate(object item);
@@ -153,14 +159,8 @@ namespace deja_vu
         {
             //Add most recent to listbox
             AddListBoxItem(replayBuffers[replayBuffers.Count - 1]);
-            for (var i = 0; i < listBox1.Items.Count; i++)
-            {
-                //Set the most recent as the selected item
-                listBox1.Invoke(() =>
-                    {
-                        listBox1.SetSelected(0, true);
-                    });
-            }
+            //Set the most recent as the selected item
+            listBox1.Invoke(() => listBox1.SetSelected(0, true));
         }
 
         private void OnChanged(object sender, FileSystemEventArgs e)
@@ -199,7 +199,6 @@ namespace deja_vu
             if (_mBDirty)
             {
                 lstNotification.BeginUpdate();
-                //lstNotification.Items.Add(_mSb.ToString());
                 lstNotification.Items.Insert(0, _mSb.ToString());
                 lstNotification.EndUpdate();
                 _mBDirty = false;
@@ -247,7 +246,19 @@ namespace deja_vu
         //Current Replay Slot
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
-
+            //Get which slot is selected
+            var senderAsListControl = (ListBox)sender;
+            var newSlot =
+                senderAsListControl.SelectedItem.ToString()
+                                   .Substring(senderAsListControl.SelectedItem.ToString().LastIndexOf("-") + 1);
+            var replaySlot = txtFile.Text + "\\" + ReplayFolderPrefix + newSlot;
+            var replayFile = replaySlot + "\\" + "replay" + GetNextBufferFileExtension();
+            
+            //Copy replay to current slot
+            File.Copy(replayFile, GetCurrentReplayFolder() + "\\" + "replay" + GetNextBufferFileExtension(), true);
+            _mSb.AppendLine("Switched to slot "+newSlot+". ");
+            _mSb.Append(DateTime.Now);
+            _mBDirty = true;
         }
     }
 }

@@ -4,6 +4,8 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using System.Diagnostics;
+using deja_vu.Utilities;
 
 namespace deja_vu
 {
@@ -13,7 +15,7 @@ namespace deja_vu
         private bool _mBDirty;
         private System.IO.FileSystemWatcher _mWatcher;
         private bool _mBIsWatching;
-        
+
         //List of replay buffers
         //Using a List allows n buffers
         static List<string> _replayBuffers;
@@ -36,7 +38,7 @@ namespace deja_vu
             if (!string.IsNullOrWhiteSpace(formerDir))
             {
                 txtFile.Text = formerDir;
-            }   
+            }
         }
 
         private void CheckForIni()
@@ -56,7 +58,7 @@ namespace deja_vu
                 _mWatcher.Dispose();
                 btnWatchFile.BackColor = Color.LightSkyBlue;
                 btnWatchFile.Text = "Start Watching";
-                
+
             }
             else
             {
@@ -82,7 +84,6 @@ namespace deja_vu
                 //_mWatcher.Deleted += OnChanged;
                 //_mWatcher.Renamed += OnRenamed;
                 _mWatcher.EnableRaisingEvents = true;
-
                 CreateCurrentReplayFolderIfNecessary();
             }
         }
@@ -135,8 +136,8 @@ namespace deja_vu
             if (!_useCycle)
             {
                 var replayIndex = _replayBuffers.Count;
-                 replayPath = dir.Substring(0, dir.LastIndexOf("\\", StringComparison.Ordinal)) + "\\" +
-                                 ReplayFolderPrefix + replayIndex;
+                replayPath = dir.Substring(0, dir.LastIndexOf("\\", StringComparison.Ordinal)) + "\\" +
+                                ReplayFolderPrefix + replayIndex;
             }
             //Circle around to maintain a max number of replays.
             else
@@ -150,7 +151,7 @@ namespace deja_vu
                 replayPath = dir.Substring(0, dir.LastIndexOf("\\", StringComparison.Ordinal)) + "\\" +
                                 ReplayFolderPrefix + _cycleIndex;
             }
-            
+
 
             if (!Directory.Exists(replayPath))
             {
@@ -160,7 +161,7 @@ namespace deja_vu
 
             CreateCurrentReplayFolderIfNecessary();
 
-            if((_useCycle && _replayBuffers.Count < _cycleSize) || !_useCycle)
+            if ((_useCycle && _replayBuffers.Count < _cycleSize) || !_useCycle)
                 _replayBuffers.Add(replayPath);
 
             //Copy and move the buffer into two replay folders
@@ -174,9 +175,9 @@ namespace deja_vu
             }
             catch (Exception)
             {
-               Console.WriteLine("We tried to access a deleted file?");
+                Console.WriteLine("We tried to access a deleted file?");
             }
-            
+
 
             UpdateListBoxWithReplays();
             //_mSb.Append(DateTime.Now);
@@ -212,7 +213,6 @@ namespace deja_vu
 
             //Set the most recent as the selected item
             listBox1.Invoke(() => listBox1.SetSelected(0, true));
-                
         }
 
         private void OnChanged(object sender, FileSystemEventArgs e)
@@ -243,7 +243,7 @@ namespace deja_vu
                 _mSb.Append("    ");
                 _mSb.Append(DateTime.Now);
                 _mBDirty = true;
-            }            
+            }
         }
 
         private void tmrEditNotify_Tick(object sender, EventArgs e)
@@ -318,7 +318,7 @@ namespace deja_vu
                                    .Substring(senderAsListControl.SelectedItem.ToString().LastIndexOf("-") + 1);
             var replaySlot = txtFile.Text + "\\" + ReplayFolderPrefix + newSlot;
             var replayFile = replaySlot + "\\" + "replay" + GetNextBufferFileExtension();
-            
+
             //Copy replay to current slot
             try
             {
@@ -332,17 +332,17 @@ namespace deja_vu
             {
                 Console.WriteLine(ex.Message);
                 _mSb.Remove(0, _mSb.Length);
-                _mSb.AppendLine("Error. Could not find valid replay file in slot "+newSlot+". ");
+                _mSb.AppendLine("Error. Could not find valid replay file in slot " + newSlot + ". ");
                 _mSb.Append(DateTime.Now);
                 _mBDirty = true;
             }
-            
+
         }
 
         //Use Cycling Checkbox
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            var buttonBase = (CheckBox) sender;
+            var buttonBase = (CheckBox)sender;
             numericUpDown1.Enabled = buttonBase.CheckState == CheckState.Checked;
             _useCycle = numericUpDown1.Enabled;
 
@@ -351,7 +351,7 @@ namespace deja_vu
         //Replay Cycles
         private void numericUpDown1_ValueChanged(object sender, EventArgs e)
         {
-            var upDown = (NumericUpDown) sender;
+            var upDown = (NumericUpDown)sender;
             _cycleSize = Decimal.ToInt32(upDown.Value);
         }
     }

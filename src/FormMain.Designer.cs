@@ -45,6 +45,8 @@ namespace deja_vu
             this.label1 = new System.Windows.Forms.Label();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.Radio_FullSpeed = new System.Windows.Forms.RadioButton();
+            this.Radio_HalfSpeed = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -140,7 +142,7 @@ namespace deja_vu
             this.listBox1.FormattingEnabled = true;
             this.listBox1.Location = new System.Drawing.Point(112, 97);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(357, 30);
+            this.listBox1.Size = new System.Drawing.Size(256, 30);
             this.listBox1.TabIndex = 10;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
@@ -174,11 +176,35 @@ namespace deja_vu
             this.numericUpDown1.TabIndex = 13;
             this.numericUpDown1.ValueChanged += new System.EventHandler(this.numericUpDown1_ValueChanged);
             // 
+            // Radio_FullSpeed
+            // 
+            this.Radio_FullSpeed.AutoSize = true;
+            this.Radio_FullSpeed.Checked = true;
+            this.Radio_FullSpeed.Location = new System.Drawing.Point(433, 97);
+            this.Radio_FullSpeed.Name = "Radio_FullSpeed";
+            this.Radio_FullSpeed.Size = new System.Drawing.Size(36, 17);
+            this.Radio_FullSpeed.TabIndex = 14;
+            this.Radio_FullSpeed.TabStop = true;
+            this.Radio_FullSpeed.Text = "1x";
+            this.Radio_FullSpeed.UseVisualStyleBackColor = true;
+            // 
+            // Radio_HalfSpeed
+            // 
+            this.Radio_HalfSpeed.AutoSize = true;
+            this.Radio_HalfSpeed.Location = new System.Drawing.Point(380, 97);
+            this.Radio_HalfSpeed.Name = "Radio_HalfSpeed";
+            this.Radio_HalfSpeed.Size = new System.Drawing.Size(47, 17);
+            this.Radio_HalfSpeed.TabIndex = 15;
+            this.Radio_HalfSpeed.Text = "1/2x";
+            this.Radio_HalfSpeed.UseVisualStyleBackColor = true;
+            // 
             // FrmNotifier
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(481, 422);
+            this.Controls.Add(this.Radio_HalfSpeed);
+            this.Controls.Add(this.Radio_FullSpeed);
             this.Controls.Add(this.numericUpDown1);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.label1);
@@ -219,6 +245,8 @@ namespace deja_vu
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.RadioButton Radio_FullSpeed;
+        private System.Windows.Forms.RadioButton Radio_HalfSpeed;
     }
 }
 

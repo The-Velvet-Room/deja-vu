@@ -43,7 +43,7 @@ namespace deja_vu
         {
             if (!File.Exists(IniFileName))
             {
-                File.Create(IniFileName);
+                File.Create(IniFileName).Close();
             }
         }
 

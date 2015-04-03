@@ -204,16 +204,14 @@ namespace deja_vu
             if ((_useCycle && _replayBuffers.Count <= _cycleSize))
             {
                 AddListBoxItem(_replayBuffers[_cycleIndex]);
-                //Set the most recent as the selected item
-                listBox1.Invoke(() => listBox1.SetSelected(0, true));
             }
             else
             {
                 AddListBoxItem(_replayBuffers[_replayBuffers.Count - 1]);
-                //Set the most recent as the selected item
-                listBox1.Invoke(() => listBox1.SetSelected(0, true));
-                
             }
+
+            //Set the most recent as the selected item
+            listBox1.Invoke(() => listBox1.SetSelected(0, true));
                 
         }
 

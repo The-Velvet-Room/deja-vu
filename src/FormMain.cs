@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
 using deja_vu.Utilities;
+using deja_vu.Properties;
 
 namespace deja_vu
 {
@@ -21,7 +22,6 @@ namespace deja_vu
         static List<string> _replayBuffers;
         private const string ReplayFolderPrefix = "tvr-replay-";
         private string _nextBufferPath;
-        private const string IniFileName = "deja-vu.ini";
         private bool _useCycle;
         private int _cycleSize;
         private int _cycleIndex = -1;
@@ -33,20 +33,6 @@ namespace deja_vu
             _mBDirty = false;
             _mBIsWatching = false;
             _replayBuffers = new List<string>();
-            CheckForIni();
-            var formerDir = File.ReadAllText(IniFileName);
-            if (!string.IsNullOrWhiteSpace(formerDir))
-            {
-                txtFile.Text = formerDir;
-            }
-        }
-
-        private void CheckForIni()
-        {
-            if (!File.Exists(IniFileName))
-            {
-                File.Create(IniFileName).Close();
-            }
         }
 
         private void btnWatchFile_Click(object sender, EventArgs e)
@@ -69,15 +55,11 @@ namespace deja_vu
                 _mWatcher = new System.IO.FileSystemWatcher
                     {
                         Filter = "*.*",
-                        Path = txtFile.Text.EndsWith("\\") ? txtFile.Text : txtFile.Text + "\\",
+                        Path = Settings.Default.ReplayPath,
                         IncludeSubdirectories = false,
                         NotifyFilter = NotifyFilters.LastWrite
                                        | NotifyFilters.FileName | NotifyFilters.DirectoryName
                     };
-
-                //Write path so we can pick it again on startup.
-                File.WriteAllText(IniFileName, _mWatcher.Path);
-
 
                 //_mWatcher.Changed += OnChanged;
                 _mWatcher.Created += OnCreated;
@@ -109,7 +91,7 @@ namespace deja_vu
         {
             //Create folder for currently chosen replay
             //Must always be active as this is the main file
-            var replayPath = txtFile.Text + "\\" + ReplayFolderPrefix + "current";
+            var replayPath = Settings.Default.ReplayPath + ReplayFolderPrefix + "current";
 
             if (!Directory.Exists(replayPath))
             {
@@ -119,7 +101,7 @@ namespace deja_vu
 
         private string GetCurrentReplayFolder()
         {
-            var replayPath = txtFile.Text + "\\" + ReplayFolderPrefix + "current";
+            var replayPath = Settings.Default.ReplayPath + ReplayFolderPrefix + "current";
             return replayPath;
         }
 
@@ -257,20 +239,6 @@ namespace deja_vu
             }
         }
 
-        private void btnBrowseFile_Click(object sender, EventArgs e)
-        {
-            var resDialog = dlgOpenDir.ShowDialog();
-            if (resDialog.ToString() == "OK")
-            {
-                txtFile.Text = dlgOpenDir.SelectedPath;
-            }
-        }
-
-        private void label3_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void FrmNotifier_Load(object sender, EventArgs e)
         {
 
@@ -286,7 +254,7 @@ namespace deja_vu
         {
             for (var i = 0; i < _replayBuffers.Count; i++)
             {
-                var replayPath = txtFile.Text + "\\" + ReplayFolderPrefix + i;
+                var replayPath = Settings.Default.ReplayPath + ReplayFolderPrefix + i;
                 Directory.Delete(replayPath, true);
             }
 
@@ -303,11 +271,6 @@ namespace deja_vu
             _mBDirty = true;
         }
 
-        private void label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
         //Current Replay Slot
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -316,13 +279,13 @@ namespace deja_vu
             var newSlot =
                 senderAsListControl.SelectedItem.ToString()
                                    .Substring(senderAsListControl.SelectedItem.ToString().LastIndexOf("-") + 1);
-            var replaySlot = txtFile.Text + "\\" + ReplayFolderPrefix + newSlot;
-            var replayFile = replaySlot + "\\" + "replay" + GetNextBufferFileExtension();
+            var replaySlot = Settings.Default.ReplayPath + ReplayFolderPrefix + newSlot;
+            var replayFile = replaySlot + Path.DirectorySeparatorChar.ToString() + "replay" + GetNextBufferFileExtension();
 
             //Copy replay to current slot
             try
             {
-                File.Copy(replayFile, GetCurrentReplayFolder() + "\\" + "replay" + GetNextBufferFileExtension(), true);
+                File.Copy(replayFile, GetCurrentReplayFolder() + Path.DirectorySeparatorChar.ToString() + "replay" + GetNextBufferFileExtension(), true);
                 _mSb.Remove(0, _mSb.Length);
                 _mSb.AppendLine("Switched to slot " + newSlot + ". " + _replayBuffers.Count + " slots available. ");
                 _mSb.Append(DateTime.Now);

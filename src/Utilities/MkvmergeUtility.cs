@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using deja_vu.Properties;
 
 namespace deja_vu.Utilities
 {
@@ -11,7 +12,18 @@ namespace deja_vu.Utilities
     {
         private const string stretchMp4Args = "-o {0} \"--sync\" \"1:0,{1}\" \"--forced-track\" \"1:no\" \"--fix-bitstream-timing-information\" \"1:1\" \"-d\" \"1\" \"-A\" \"-S\" \"-T\" \"--no-global-tags\" \"--no-chapters\" \"(\" \"{2}\" \")\" \"--track-order\" \"0:1\"";
 
-        public static string MkvmergeLocation { get; set; }
+        public static string MkvmergeLocation
+        {
+            get
+            {
+                return Settings.Default.MkvmergePath;
+            }
+            set
+            {
+                Settings.Default.MkvmergePath = value;
+                Settings.Default.Save();
+            }
+        }
 
         public static void StretchMp4(string input, string output, double rate, EventHandler exited)
         {

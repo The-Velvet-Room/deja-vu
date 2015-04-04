@@ -27,7 +27,6 @@ namespace deja_vu
 
         private void Button_ReplayPath_Click(object sender, EventArgs e)
         {
-            replayBufferBrowser.SelectedPath = Settings.Default.ReplayPath;
             var resDialog = replayBufferBrowser.ShowDialog();
             if (resDialog.ToString() == "OK")
             {

@@ -119,6 +119,7 @@
             // 
             // ConfigurationForm
             // 
+            this.AcceptButton = this.Button_OK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(301, 261);
@@ -129,8 +130,12 @@
             this.Controls.Add(this.Label_ReplayPath);
             this.Controls.Add(this.Button_ReplayPath);
             this.Controls.Add(this.Text_ReplayPath);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "ConfigurationForm";
+            this.ShowIcon = false;
+            this.ShowInTaskbar = false;
             this.Text = "Settings...";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.ConfigurationForm_FormClosed);
             this.ResumeLayout(false);

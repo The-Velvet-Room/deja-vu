@@ -354,5 +354,16 @@ namespace deja_vu
             var upDown = (NumericUpDown)sender;
             _cycleSize = Decimal.ToInt32(upDown.Value);
         }
+
+        private void MenuItem_Exit_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void MenuItem_Settings_Click(object sender, EventArgs e)
+        {
+            var form = new ConfigurationForm();
+            form.ShowDialog(this);
+        }
     }
 }

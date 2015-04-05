@@ -71,6 +71,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\FileUtility.cs" />
     <Compile Include="Utilities\MkvmergeUtility.cs" />
     <Compile Include="Utilities\PathUtility.cs" />
   </ItemGroup>

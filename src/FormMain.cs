@@ -150,9 +150,11 @@ namespace deja_vu
             //The tail of the list, and the current
             try
             {
-                File.Copy(_nextBufferPath, replayPath + "\\" + "replay" + GetNextBufferFileExtension(), true);
+                MkvmergeUtility.StretchMp4(_nextBufferPath, Path.Combine(replayPath, "replay-slow" + GetNextBufferFileExtension()), GetVideoRate());
+                File.Copy(_nextBufferPath, Path.Combine(replayPath, "replay" + GetNextBufferFileExtension()), true);
                 //_mSb.AppendLine("Wrote to slot " + replayIndex+". ");
-                File.Copy(_nextBufferPath, GetCurrentReplayFolder() + "\\" + "replay" + GetNextBufferFileExtension(), true);
+                MkvmergeUtility.StretchMp4(_nextBufferPath, Path.Combine(GetCurrentReplayFolder(), "replay-slow" + GetNextBufferFileExtension()), GetVideoRate());
+                File.Copy(_nextBufferPath, Path.Combine(GetCurrentReplayFolder(), "replay" + GetNextBufferFileExtension()), true);
                 //_mSb.AppendLine("Overwrote current. ");
             }
             catch (Exception)
@@ -280,12 +282,13 @@ namespace deja_vu
                 senderAsListControl.SelectedItem.ToString()
                                    .Substring(senderAsListControl.SelectedItem.ToString().LastIndexOf("-") + 1);
             var replaySlot = Settings.Default.ReplayPath + ReplayFolderPrefix + newSlot;
-            var replayFile = replaySlot + Path.DirectorySeparatorChar.ToString() + "replay" + GetNextBufferFileExtension();
+            var replayFile = Path.Combine(replaySlot, "replay" + GetNextBufferFileExtension());
 
             //Copy replay to current slot
             try
             {
-                File.Copy(replayFile, GetCurrentReplayFolder() + Path.DirectorySeparatorChar.ToString() + "replay" + GetNextBufferFileExtension(), true);
+                MkvmergeUtility.StretchMp4(replayFile, Path.Combine(GetCurrentReplayFolder() , "replay-slow" + GetNextBufferFileExtension()), GetVideoRate());
+                File.Copy(replayFile, Path.Combine(GetCurrentReplayFolder(), "replay" + GetNextBufferFileExtension()), true);
                 _mSb.Remove(0, _mSb.Length);
                 _mSb.AppendLine("Switched to slot " + newSlot + ". " + _replayBuffers.Count + " slots available. ");
                 _mSb.Append(DateTime.Now);
@@ -327,6 +330,11 @@ namespace deja_vu
         {
             var form = new ConfigurationForm();
             form.ShowDialog(this);
+        }
+
+        private decimal GetVideoRate()
+        {
+            return 1 / (Settings.Default.SlowReplaySpeed / 100);
         }
     }
 }

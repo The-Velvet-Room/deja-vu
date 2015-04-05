@@ -46,5 +46,17 @@ namespace deja_vu.Properties {
                 this["ReplayPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public decimal SlowReplaySpeed {
+            get {
+                return ((decimal)(this["SlowReplaySpeed"]));
+            }
+            set {
+                this["SlowReplaySpeed"] = value;
+            }
+        }
     }
 }

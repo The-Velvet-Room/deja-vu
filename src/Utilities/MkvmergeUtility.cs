@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -25,10 +26,16 @@ namespace deja_vu.Utilities
             }
         }
 
-        public static void StretchMp4(string input, string output, double rate, EventHandler exited)
+        public static void StretchMp4(string input, string output, decimal rate)
         {
-            //var t = "C:\\Users\\Derek\\Videos\\Replays\\Replay-2015-04-02-2154-06.mp4";
-            //var output = "C:\\Users\\Derek\\Videos\\Replays\\Replay-Slow.mp4";
+            StretchMp4(input, output, rate, null);
+        }
+
+        public static void StretchMp4(string input, string output, decimal rate, EventHandler exited)
+        {
+            // make sure the output string refers to an mkv file
+            output = Path.ChangeExtension(output, ".mkv");
+
             Process process = new Process();
             // Configure the process using the StartInfo properties.
             process.StartInfo.FileName = MkvmergeLocation;

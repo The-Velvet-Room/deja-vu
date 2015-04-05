@@ -44,6 +44,7 @@ namespace deja_vu
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuItem_Settings = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuItem_Exit = new System.Windows.Forms.ToolStripMenuItem();
+            this.Button_Gfycat = new System.Windows.Forms.Button();
             toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.Menu_Main.SuspendLayout();
@@ -107,7 +108,7 @@ namespace deja_vu
             this.listBox1.FormattingEnabled = true;
             this.listBox1.Location = new System.Drawing.Point(91, 89);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(378, 30);
+            this.listBox1.Size = new System.Drawing.Size(300, 30);
             this.listBox1.TabIndex = 10;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
@@ -174,11 +175,22 @@ namespace deja_vu
             this.MenuItem_Exit.Text = "Exit";
             this.MenuItem_Exit.Click += new System.EventHandler(this.MenuItem_Exit_Click);
             // 
+            // Button_Gfycat
+            // 
+            this.Button_Gfycat.Location = new System.Drawing.Point(397, 92);
+            this.Button_Gfycat.Name = "Button_Gfycat";
+            this.Button_Gfycat.Size = new System.Drawing.Size(75, 23);
+            this.Button_Gfycat.TabIndex = 18;
+            this.Button_Gfycat.Text = "Gfycat";
+            this.Button_Gfycat.UseVisualStyleBackColor = true;
+            this.Button_Gfycat.Click += new System.EventHandler(this.Button_Gfycat_Click);
+            // 
             // FrmNotifier
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(481, 422);
+            this.Controls.Add(this.Button_Gfycat);
             this.Controls.Add(this.numericUpDown1);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.label1);
@@ -217,6 +229,7 @@ namespace deja_vu
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem MenuItem_Settings;
         private System.Windows.Forms.ToolStripMenuItem MenuItem_Exit;
+        private System.Windows.Forms.Button Button_Gfycat;
     }
 }
 

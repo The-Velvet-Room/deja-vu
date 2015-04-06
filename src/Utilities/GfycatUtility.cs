@@ -87,6 +87,9 @@ namespace deja_vu.Utilities
 
         private static MultipartFormDataContent BuildFormData(string key, StreamContent file)
         {
+            // This information was taken from http://gfycat.com/api.
+            // It's not sensitive or unique to deja-vu.
+
             var req = new MultipartFormDataContent();
             req.Add(new StringContent(key), "key");
             req.Add(new StringContent("private"), "acl");

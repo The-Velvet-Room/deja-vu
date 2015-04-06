@@ -121,9 +121,9 @@
             this.Label_GfycatPostEndpoint.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Label_GfycatPostEndpoint.Location = new System.Drawing.Point(9, 165);
             this.Label_GfycatPostEndpoint.Name = "Label_GfycatPostEndpoint";
-            this.Label_GfycatPostEndpoint.Size = new System.Drawing.Size(135, 13);
+            this.Label_GfycatPostEndpoint.Size = new System.Drawing.Size(291, 13);
             this.Label_GfycatPostEndpoint.TabIndex = 10;
-            this.Label_GfycatPostEndpoint.Text = "Gfycat POST Endpoint";
+            this.Label_GfycatPostEndpoint.Text = "Gfycat POST Endpoint (controlled by Send to Bot)";
             // 
             // Text_GfycatPostEndpoint
             // 

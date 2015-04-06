@@ -11,5 +11,8 @@
     <Setting Name="SlowReplaySpeed" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">100</Value>
     </Setting>
+    <Setting Name="GfycatPostEndpoint" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

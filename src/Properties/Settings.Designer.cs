@@ -58,5 +58,17 @@ namespace deja_vu.Properties {
                 this["SlowReplaySpeed"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GfycatPostEndpoint {
+            get {
+                return ((string)(this["GfycatPostEndpoint"]));
+            }
+            set {
+                this["GfycatPostEndpoint"] = value;
+            }
+        }
     }
 }

@@ -45,6 +45,7 @@ namespace deja_vu
             this.MenuItem_Settings = new System.Windows.Forms.ToolStripMenuItem();
             this.MenuItem_Exit = new System.Windows.Forms.ToolStripMenuItem();
             this.Button_Gfycat = new System.Windows.Forms.Button();
+            this.Check_SendToBot = new System.Windows.Forms.CheckBox();
             toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
             this.Menu_Main.SuspendLayout();
@@ -185,11 +186,22 @@ namespace deja_vu
             this.Button_Gfycat.UseVisualStyleBackColor = true;
             this.Button_Gfycat.Click += new System.EventHandler(this.Button_Gfycat_Click);
             // 
+            // Check_SendToBot
+            // 
+            this.Check_SendToBot.AutoSize = true;
+            this.Check_SendToBot.Location = new System.Drawing.Point(397, 122);
+            this.Check_SendToBot.Name = "Check_SendToBot";
+            this.Check_SendToBot.Size = new System.Drawing.Size(82, 17);
+            this.Check_SendToBot.TabIndex = 19;
+            this.Check_SendToBot.Text = "Send to Bot";
+            this.Check_SendToBot.UseVisualStyleBackColor = true;
+            // 
             // FrmNotifier
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(481, 422);
+            this.Controls.Add(this.Check_SendToBot);
             this.Controls.Add(this.Button_Gfycat);
             this.Controls.Add(this.numericUpDown1);
             this.Controls.Add(this.checkBox1);
@@ -230,6 +242,7 @@ namespace deja_vu
         private System.Windows.Forms.ToolStripMenuItem MenuItem_Settings;
         private System.Windows.Forms.ToolStripMenuItem MenuItem_Exit;
         private System.Windows.Forms.Button Button_Gfycat;
+        private System.Windows.Forms.CheckBox Check_SendToBot;
     }
 }
 

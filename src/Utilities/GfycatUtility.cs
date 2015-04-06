@@ -59,7 +59,7 @@ namespace deja_vu.Utilities
                             };
                         }
                     }
-                    Thread.Sleep(1000);
+                    Thread.Sleep(2000);
                 }
             }
             return new GfycatResult
@@ -69,20 +69,20 @@ namespace deja_vu.Utilities
             };
         }
 
-        public static async Task<GfycatResult> UploadAndPost(string filePath, string endpoint)
+        /// <summary>
+        /// POSTs a url to the specified endpoint as parameter "url".
+        /// </summary>
+        /// <param name="endpoint">Endpoint to POST to.</param>
+        /// <param name="url">Url to be POSTed to the gfycat endpoint.</param>
+        public static async void PostUrl(string endpoint, string url)
         {
-            var result = await Upload(filePath);
-            if (result.Status == GfycatStatus.Complete)
+            using (var client = new HttpClient())
             {
-                using (var client = new HttpClient())
-                {
-                    var content = new FormUrlEncodedContent(new[] {
-                        new KeyValuePair<string, string>("url", result.Url)
+                var content = new FormUrlEncodedContent(new[] {
+                        new KeyValuePair<string, string>("url", url)
                     });
-                    var resp = await client.PostAsync(endpoint, content);
-                }
+                var resp = await client.PostAsync(endpoint, content);
             }
-            return result;
         }
 
         private static MultipartFormDataContent BuildFormData(string key, StreamContent file)

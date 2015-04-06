@@ -108,7 +108,7 @@ namespace deja_vu
 
         private string GetNextBufferFileExtension()
         {
-            return _nextBufferPath == null ? "" : _nextBufferPath.Substring(_nextBufferPath.LastIndexOf("."));
+            return _nextBufferPath == null ? "" : Path.GetExtension(_nextBufferPath);
         }
 
         private void MapBufferToReplay(string dir)
@@ -354,6 +354,24 @@ namespace deja_vu
         private decimal GetVideoRate()
         {
             return 1 / (Settings.Default.SlowReplaySpeed / 100);
+        }
+
+        private async void Button_Gfycat_Click(object sender, EventArgs e)
+        {
+            var oldText = Button_Gfycat.Text;
+            Button_Gfycat.Enabled = false;
+            Button_Gfycat.Text = "Uploading...";
+
+            var result = await GfycatUtility.Upload(Path.Combine(GetCurrentReplayFolder(), "replay" + GetNextBufferFileExtension()));
+            if (Check_SendToBot.Checked && result.Status == GfycatStatus.Complete)
+            {
+                GfycatUtility.PostUrl(Settings.Default.GfycatPostEndpoint, result.Url);
+            }
+            var gfycatForm = new GfycatResultForm(result);
+            gfycatForm.ShowDialog();
+
+            Button_Gfycat.Text = oldText;
+            Button_Gfycat.Enabled = true;
         }
     }
 }

@@ -36,6 +36,8 @@
             this.Button_OK = new System.Windows.Forms.Button();
             this.Label_Percent = new System.Windows.Forms.Label();
             this.Label_SlowReplaySpeed = new System.Windows.Forms.Label();
+            this.Label_GfycatPostEndpoint = new System.Windows.Forms.Label();
+            this.Text_GfycatPostEndpoint = new System.Windows.Forms.TextBox();
             this.Num_SlowReplaySpeed = new System.Windows.Forms.NumericUpDown();
             this.Text_MkvmergePath = new System.Windows.Forms.TextBox();
             this.Text_ReplayPath = new System.Windows.Forms.TextBox();
@@ -113,6 +115,25 @@
             this.Label_SlowReplaySpeed.TabIndex = 9;
             this.Label_SlowReplaySpeed.Text = "Replay Speed (won\'t change existing replays)";
             // 
+            // Label_GfycatPostEndpoint
+            // 
+            this.Label_GfycatPostEndpoint.AutoSize = true;
+            this.Label_GfycatPostEndpoint.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Label_GfycatPostEndpoint.Location = new System.Drawing.Point(9, 165);
+            this.Label_GfycatPostEndpoint.Name = "Label_GfycatPostEndpoint";
+            this.Label_GfycatPostEndpoint.Size = new System.Drawing.Size(291, 13);
+            this.Label_GfycatPostEndpoint.TabIndex = 10;
+            this.Label_GfycatPostEndpoint.Text = "Gfycat POST Endpoint (controlled by Send to Bot)";
+            // 
+            // Text_GfycatPostEndpoint
+            // 
+            this.Text_GfycatPostEndpoint.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::deja_vu.Properties.Settings.Default, "GfycatPostEndpoint", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.Text_GfycatPostEndpoint.Location = new System.Drawing.Point(12, 181);
+            this.Text_GfycatPostEndpoint.Name = "Text_GfycatPostEndpoint";
+            this.Text_GfycatPostEndpoint.Size = new System.Drawing.Size(277, 20);
+            this.Text_GfycatPostEndpoint.TabIndex = 11;
+            this.Text_GfycatPostEndpoint.Text = global::deja_vu.Properties.Settings.Default.GfycatPostEndpoint;
+            // 
             // Num_SlowReplaySpeed
             // 
             this.Num_SlowReplaySpeed.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::deja_vu.Properties.Settings.Default, "SlowReplaySpeed", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -165,6 +186,8 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(301, 261);
+            this.Controls.Add(this.Text_GfycatPostEndpoint);
+            this.Controls.Add(this.Label_GfycatPostEndpoint);
             this.Controls.Add(this.Label_SlowReplaySpeed);
             this.Controls.Add(this.Label_Percent);
             this.Controls.Add(this.Num_SlowReplaySpeed);
@@ -203,5 +226,7 @@
         private System.Windows.Forms.NumericUpDown Num_SlowReplaySpeed;
         private System.Windows.Forms.Label Label_Percent;
         private System.Windows.Forms.Label Label_SlowReplaySpeed;
+        private System.Windows.Forms.TextBox Text_GfycatPostEndpoint;
+        private System.Windows.Forms.Label Label_GfycatPostEndpoint;
     }
 }

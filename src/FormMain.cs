@@ -81,7 +81,7 @@ namespace deja_vu
                 {
                     return;
                 }
-
+                Trace.TraceInformation(String.Format("Picked up a file creation event: {0}", e.FullPath));
                 _nextBufferPath = e.FullPath;
                 MapBufferToReplay(e.FullPath);
                 _mBDirty = true;
@@ -153,24 +153,26 @@ namespace deja_vu
             {
                 FileUtility.OnceDoneWriting(_nextBufferPath, (f) =>
                 {
-                    using (var result = File.Create(Path.Combine(replayPath, "replay" + GetNextBufferFileExtension())))
+                    var nextReplaySlot = Path.Combine(replayPath, "replay" + GetNextBufferFileExtension());
+                    var currentReplay = Path.Combine(GetCurrentReplayFolder(), "replay" + GetNextBufferFileExtension());
+                    Trace.TraceInformation(String.Format("Copying {0} to {1}...", _nextBufferPath, nextReplaySlot));
+                    using (var result = File.Create(nextReplaySlot))
                     {
                         f.CopyTo(result);
                     }
-                    using (var result = File.Create(Path.Combine(GetCurrentReplayFolder(), "replay" + GetNextBufferFileExtension())))
-                    {
-                        f.CopyTo(result);
-                    }
+                    Trace.TraceInformation(String.Format("File copied to {0}", nextReplaySlot));
                 });
-                MkvmergeUtility.StretchMp4(_nextBufferPath, Path.Combine(replayPath, "replay-slow" + GetNextBufferFileExtension()), GetVideoRate());
-                //File.Copy(_nextBufferPath, Path.Combine(replayPath, "replay" + GetNextBufferFileExtension()), true);
-                //_mSb.AppendLine("Wrote to slot " + replayIndex+". ");
-                MkvmergeUtility.StretchMp4(_nextBufferPath, Path.Combine(GetCurrentReplayFolder(), "replay-slow" + GetNextBufferFileExtension()), GetVideoRate());
-                //File.Copy(_nextBufferPath, Path.Combine(GetCurrentReplayFolder(), "replay" + GetNextBufferFileExtension()), true);
-                //_mSb.AppendLine("Overwrote current. ");
+
+                var nextReplaySlotSlow = Path.Combine(replayPath, "replay-slow.mkv");
+                Trace.TraceInformation(String.Format("Starting to process {0} to {1}", _nextBufferPath, nextReplaySlotSlow));
+                MkvmergeUtility.StretchMp4(_nextBufferPath, nextReplaySlotSlow, GetVideoRate(), (object mkvSender, EventArgs mkvArgs) =>
+                {
+                    Trace.TraceInformation(String.Format("Finished processing {0}", nextReplaySlotSlow));
+                });
             }
             catch (Exception ex)
             {
+                Trace.TraceError("Error while moving replays to a different slot", new { Error = ex });
                 Console.WriteLine("We tried to access a deleted file?");
             }
 
@@ -301,13 +303,22 @@ namespace deja_vu
             {
                 FileUtility.OnceDoneWriting(replayFile, (f) =>
                 {
-                    using (var result = File.Create(Path.Combine(GetCurrentReplayFolder(), "replay" + GetNextBufferFileExtension())))
+                    var newFile = Path.Combine(GetCurrentReplayFolder(), "replay" + GetNextBufferFileExtension());
+                    Trace.TraceInformation(String.Format("Copying {0} to {1}...", replayFile, newFile));
+                    using (var result = File.Create(newFile))
                     {
                         f.CopyTo(result);
                     }
+                    Trace.TraceInformation(String.Format("File copied to {0}", newFile));
                 });
-                MkvmergeUtility.StretchMp4(replayFile, Path.Combine(GetCurrentReplayFolder() , "replay-slow" + GetNextBufferFileExtension()), GetVideoRate());
-                //File.Copy(replayFile, Path.Combine(GetCurrentReplayFolder(), "replay" + GetNextBufferFileExtension()), true);
+
+                var slowFile = Path.Combine(GetCurrentReplayFolder(), "replay-slow.mkv");
+                Trace.TraceInformation(String.Format("Starting to process {0} to {1}", replayFile, slowFile));
+                MkvmergeUtility.StretchMp4(replayFile, slowFile, GetVideoRate(), (object mkvSender, EventArgs mkvArgs) =>
+                {
+                    Trace.TraceInformation(String.Format("Finished processing {0}", slowFile));
+                });
+
                 _mSb.Remove(0, _mSb.Length);
                 _mSb.AppendLine("Switched to slot " + newSlot + ". " + _replayBuffers.Count + " slots available. ");
                 _mSb.Append(DateTime.Now);
@@ -315,6 +326,7 @@ namespace deja_vu
             }
             catch (Exception ex)
             {
+                Trace.TraceError("Error while copying replay to current slot", new { Error = ex });
                 Console.WriteLine(ex.Message);
                 _mSb.Remove(0, _mSb.Length);
                 _mSb.AppendLine("Error. Could not find valid replay file in slot " + newSlot + ". ");

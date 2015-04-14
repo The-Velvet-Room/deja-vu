@@ -161,25 +161,13 @@ namespace deja_vu
                         f.CopyTo(result);
                     }
                     Trace.TraceInformation(String.Format("File copied to {0}", nextReplaySlot));
-                    Trace.TraceInformation(String.Format("Copying {0} to {1}...", _nextBufferPath, currentReplay));
-                    using (var result = File.Create(currentReplay))
-                    {
-                        f.CopyTo(result);
-                    }
-                    Trace.TraceInformation(String.Format("File copied to {0}", currentReplay));
                 });
 
-                var nextReplaySlotSlow = Path.Combine(replayPath, "replay-slow" + GetNextBufferFileExtension());
+                var nextReplaySlotSlow = Path.Combine(replayPath, "replay-slow.mkv");
                 Trace.TraceInformation(String.Format("Starting to process {0} to {1}", _nextBufferPath, nextReplaySlotSlow));
                 MkvmergeUtility.StretchMp4(_nextBufferPath, nextReplaySlotSlow, GetVideoRate(), (object mkvSender, EventArgs mkvArgs) =>
                 {
                     Trace.TraceInformation(String.Format("Finished processing {0}", nextReplaySlotSlow));
-                });
-                var currentReplaySlow = Path.Combine(GetCurrentReplayFolder(), "replay-slow" + GetNextBufferFileExtension());
-                Trace.TraceInformation(String.Format("Starting to process {0} to {1}", _nextBufferPath, currentReplaySlow));
-                MkvmergeUtility.StretchMp4(_nextBufferPath, currentReplaySlow, GetVideoRate(), (object mkvSender, EventArgs mkvArgs) =>
-                {
-                    Trace.TraceInformation(String.Format("Finished processing {0}", currentReplaySlow));
                 });
             }
             catch (Exception ex)
@@ -324,7 +312,7 @@ namespace deja_vu
                     Trace.TraceInformation(String.Format("File copied to {0}", newFile));
                 });
 
-                var slowFile = Path.Combine(GetCurrentReplayFolder(), "replay-slow" + GetNextBufferFileExtension());
+                var slowFile = Path.Combine(GetCurrentReplayFolder(), "replay-slow.mkv");
                 Trace.TraceInformation(String.Format("Starting to process {0} to {1}", replayFile, slowFile));
                 MkvmergeUtility.StretchMp4(replayFile, slowFile, GetVideoRate(), (object mkvSender, EventArgs mkvArgs) =>
                 {

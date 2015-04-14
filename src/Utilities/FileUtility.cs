@@ -31,6 +31,7 @@ namespace deja_vu.Utilities
                         throw;
                     }
                 }
+                Thread.Sleep(1000);
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -16,6 +17,7 @@ namespace deja_vu.Utilities
         {
             while (true)
             {
+                Trace.TraceInformation("Polling for a write handle...");
                 try
                 {
                     using (var file = File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
@@ -28,6 +30,7 @@ namespace deja_vu.Utilities
                 {
                     if (!IsLockedException(ex))
                     {
+                        Trace.TraceError("Exception was not a locked exception.", new { Error = ex });
                         throw;
                     }
                 }

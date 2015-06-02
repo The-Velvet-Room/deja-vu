@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -12,6 +13,7 @@ namespace deja_vu.Utilities
 {
     public static class FileUtility
     {
+        private const int FileBonusTime = 1000;
 
         public static void OnceDoneWriting(string path, Action<FileStream> action)
         {
@@ -22,9 +24,20 @@ namespace deja_vu.Utilities
                 {
                     using (var file = File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
                     {
+                        //Give extra time for file to be completely written
+                        Thread.Sleep(FileBonusTime);
+
+                        if (file.Length == 0)
+                        {
+                            throw new FileLoadException();
+                        }
                         action(file);
                     }
                     break;
+                }
+                catch (FileLoadException fex)
+                {
+                    Trace.TraceInformation("Invalid filesize. Waiting for filestream to close.");
                 }
                 catch (IOException ex)
                 {
@@ -34,7 +47,7 @@ namespace deja_vu.Utilities
                         throw;
                     }
                 }
-                Thread.Sleep(1000);
+                Thread.Sleep(600);
             }
         }
 

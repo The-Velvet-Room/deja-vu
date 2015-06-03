@@ -1,20 +1,15 @@
 ﻿using System;
-using System.CodeDom;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace deja_vu.Utilities
 {
     public static class FileUtility
     {
-        private const int FileBonusTime = 1000;
-
         public static void OnceDoneWriting(string path, Action<FileStream> action)
         {
             while (true)
@@ -24,9 +19,6 @@ namespace deja_vu.Utilities
                 {
                     using (var file = File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
                     {
-                        //Give extra time for file to be completely written
-                        Thread.Sleep(FileBonusTime);
-
                         if (file.Length == 0)
                         {
                             throw new FileLoadException();

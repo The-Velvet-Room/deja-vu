@@ -1,18 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace deja_vu.Utilities
 {
     public static class FileUtility
     {
-
         public static void OnceDoneWriting(string path, Action<FileStream> action)
         {
             while (true)
@@ -22,9 +19,17 @@ namespace deja_vu.Utilities
                 {
                     using (var file = File.Open(path, FileMode.Open, FileAccess.ReadWrite, FileShare.None))
                     {
+                        if (file.Length == 0)
+                        {
+                            throw new FileLoadException();
+                        }
                         action(file);
                     }
                     break;
+                }
+                catch (FileLoadException fex)
+                {
+                    Trace.TraceInformation("Invalid filesize. Waiting for filestream to close.");
                 }
                 catch (IOException ex)
                 {
@@ -34,7 +39,7 @@ namespace deja_vu.Utilities
                         throw;
                     }
                 }
-                Thread.Sleep(1000);
+                Thread.Sleep(600);
             }
         }
 

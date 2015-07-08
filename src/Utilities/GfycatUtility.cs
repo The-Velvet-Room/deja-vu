@@ -59,7 +59,7 @@ namespace deja_vu.Utilities
                             };
                         }
                     }
-                    Thread.Sleep(2000);
+                    await Task.Delay(2000);
                 }
             }
             return new GfycatResult
@@ -74,7 +74,7 @@ namespace deja_vu.Utilities
         /// </summary>
         /// <param name="endpoint">Endpoint to POST to.</param>
         /// <param name="url">Url to be POSTed to the gfycat endpoint.</param>
-        public static async void PostUrl(string endpoint, string url)
+        public static async Task PostUrl(string endpoint, string url)
         {
             using (var client = new HttpClient())
             {

@@ -377,7 +377,7 @@ namespace deja_vu
             var result = await GfycatUtility.Upload(Path.Combine(GetCurrentReplayFolder(), "replay" + GetNextBufferFileExtension()));
             if (Check_SendToBot.Checked && result.Status == GfycatStatus.Complete)
             {
-                GfycatUtility.PostUrl(Settings.Default.GfycatPostEndpoint, result.Url);
+                await GfycatUtility.PostUrl(Settings.Default.GfycatPostEndpoint, result.Url);
             }
             var gfycatForm = new GfycatResultForm(result);
             gfycatForm.ShowDialog();

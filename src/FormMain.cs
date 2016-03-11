@@ -381,21 +381,28 @@ namespace deja_vu
                 //Create gfycat link
                 await GfycatUtility.PostUrl(Settings.Default.GfycatPostEndpoint, result.Url);
 
-                //Get match information from web overlay
-                var currentMatchJson = await GfycatUtility.GetUrl($"{Settings.Default.WebOverlayApiRoot}/currentMatch");
+                try
+                {
+                    //Get match information from web overlay
+                    var currentMatchJson = await GfycatUtility.GetUrl($"{Settings.Default.WebOverlayApiRoot}/currentMatch");
 
-                var serializer = new JavaScriptSerializer();
-                var obj = serializer.Deserialize<Dictionary<string, string>>(currentMatchJson);
-                var playersArray = new[] {obj["lplayer"], obj["rplayer"]};
+                    var serializer = new JavaScriptSerializer();
+                    var obj = serializer.Deserialize<Dictionary<string, string>>(currentMatchJson);
+                    var playersArray = new[] { obj["lplayer"], obj["rplayer"] };
 
-                //Post Replay to web overlay
-                var data = new Dictionary<string, string>
+                    //Post Replay to web overlay
+                    var data = new Dictionary<string, string>
                 {
                     { "url" , await GfycatUtility.BuildMp4UrlFromGfycatUrl(result.Url) },
                     { "players", serializer.Serialize(playersArray)},
                     { "game", obj["currentGame"] }
                 };
-                await GfycatUtility.PostData($"{Settings.Default.WebOverlayApiRoot}/replays", data);
+                    await GfycatUtility.PostData($"{Settings.Default.WebOverlayApiRoot}/replays", data);
+                }
+                catch (Exception)
+                {
+                    // ignored
+                }
             }
             var gfycatForm = new GfycatResultForm(result);
             gfycatForm.ShowDialog();

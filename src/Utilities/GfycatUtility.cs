@@ -85,6 +85,32 @@ namespace deja_vu.Utilities
             }
         }
 
+        public static async Task PostData(string endpoint, Dictionary<string, string> data)
+        {
+            using (var client = new HttpClient())
+            {
+                var content = new FormUrlEncodedContent(data);
+                var resp = await client.PostAsync(endpoint, content);
+            }
+        }
+
+        public static async Task<string> GetUrl(string endpoint)
+        {
+            using (var client = new HttpClient())
+            {
+                var resp = await client.GetAsync(endpoint);
+                resp.EnsureSuccessStatusCode();
+                return await resp.Content.ReadAsStringAsync();
+            }
+        }
+
+        public static async Task<string> BuildMp4UrlFromGfycatUrl(string gfycatUrl)
+        {
+            var newUrl = gfycatUrl.Insert(gfycatUrl.IndexOf("gfycat", StringComparison.Ordinal), "giant.") + ".mp4";
+
+            return newUrl;
+        }
+
         private static MultipartFormDataContent BuildFormData(string key, StreamContent file)
         {
             // This information was taken from http://gfycat.com/api.

@@ -37,6 +37,8 @@
             this.Label_Percent = new System.Windows.Forms.Label();
             this.Label_SlowReplaySpeed = new System.Windows.Forms.Label();
             this.Label_GfycatPostEndpoint = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
             this.Text_GfycatPostEndpoint = new System.Windows.Forms.TextBox();
             this.Num_SlowReplaySpeed = new System.Windows.Forms.NumericUpDown();
             this.Text_MkvmergePath = new System.Windows.Forms.TextBox();
@@ -88,7 +90,7 @@
             // 
             // Button_OK
             // 
-            this.Button_OK.Location = new System.Drawing.Point(214, 226);
+            this.Button_OK.Location = new System.Drawing.Point(214, 285);
             this.Button_OK.Name = "Button_OK";
             this.Button_OK.Size = new System.Drawing.Size(75, 23);
             this.Button_OK.TabIndex = 6;
@@ -125,6 +127,26 @@
             this.Label_GfycatPostEndpoint.TabIndex = 10;
             this.Label_GfycatPostEndpoint.Text = "Gfycat POST Endpoint (controlled by Send to Bot)";
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(9, 215);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(133, 13);
+            this.label1.TabIndex = 12;
+            this.label1.Text = "Web Overlay Api Root";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(12, 231);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(274, 20);
+            this.textBox1.TabIndex = 13;
+            this.textBox1.Text = global::deja_vu.Properties.Settings.Default.WebOverlayApiRoot;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            // 
             // Text_GfycatPostEndpoint
             // 
             this.Text_GfycatPostEndpoint.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::deja_vu.Properties.Settings.Default, "GfycatPostEndpoint", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -133,6 +155,7 @@
             this.Text_GfycatPostEndpoint.Size = new System.Drawing.Size(277, 20);
             this.Text_GfycatPostEndpoint.TabIndex = 11;
             this.Text_GfycatPostEndpoint.Text = global::deja_vu.Properties.Settings.Default.GfycatPostEndpoint;
+            this.Text_GfycatPostEndpoint.TextChanged += new System.EventHandler(this.Text_GfycatPostEndpoint_TextChanged);
             // 
             // Num_SlowReplaySpeed
             // 
@@ -185,7 +208,9 @@
             this.AcceptButton = this.Button_OK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(301, 261);
+            this.ClientSize = new System.Drawing.Size(301, 320);
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.Text_GfycatPostEndpoint);
             this.Controls.Add(this.Label_GfycatPostEndpoint);
             this.Controls.Add(this.Label_SlowReplaySpeed);
@@ -228,5 +253,7 @@
         private System.Windows.Forms.Label Label_SlowReplaySpeed;
         private System.Windows.Forms.TextBox Text_GfycatPostEndpoint;
         private System.Windows.Forms.Label Label_GfycatPostEndpoint;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox textBox1;
     }
 }

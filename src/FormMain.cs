@@ -8,6 +8,7 @@ using System.Diagnostics;
 using deja_vu.Utilities;
 using deja_vu.Properties;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 namespace deja_vu
 {
@@ -377,7 +378,24 @@ namespace deja_vu
             var result = await GfycatUtility.Upload(Path.Combine(GetCurrentReplayFolder(), "replay" + GetNextBufferFileExtension()));
             if (Check_SendToBot.Checked && result.Status == GfycatStatus.Complete)
             {
+                //Create gfycat link
                 await GfycatUtility.PostUrl(Settings.Default.GfycatPostEndpoint, result.Url);
+
+                //Get match information from web overlay
+                var currentMatchJson = await GfycatUtility.GetUrl($"{Settings.Default.WebOverlayApiRoot}/currentMatch");
+
+                var serializer = new JavaScriptSerializer();
+                var obj = serializer.Deserialize<Dictionary<string, string>>(currentMatchJson);
+                var playersArray = new[] {obj["lplayer"], obj["rplayer"]};
+
+                //Post Replay to web overlay
+                var data = new Dictionary<string, string>
+                {
+                    { "url" , await GfycatUtility.BuildMp4UrlFromGfycatUrl(result.Url) },
+                    { "players", serializer.Serialize(playersArray)},
+                    { "game", obj["currentGame"] }
+                };
+                await GfycatUtility.PostData($"{Settings.Default.WebOverlayApiRoot}/replays", data);
             }
             var gfycatForm = new GfycatResultForm(result);
             gfycatForm.ShowDialog();

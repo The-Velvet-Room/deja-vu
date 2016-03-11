@@ -14,5 +14,8 @@
     <Setting Name="GfycatPostEndpoint" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="WebOverlayApiRoot" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

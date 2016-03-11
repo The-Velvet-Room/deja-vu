@@ -50,5 +50,20 @@ namespace deja_vu
         {
             this.Close();
         }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+            Settings.Default.WebOverlayApiRoot = textBox1.Text;
+        }
+
+        private void Text_GfycatPostEndpoint_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
